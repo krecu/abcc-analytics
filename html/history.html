@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html ng-app="AbccTools">
+<head>
+    <title>ABCC: Analytics</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/lib/angular-material.min.css">
+    <link rel="stylesheet" type="text/css" href="/lib/md-data-table.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/cryptocoins.css">
+    <link rel="stylesheet" type="text/css" href="/css/cryptocoins-colors.css">
+
+    <script type="text/javascript" src="/lib/bignumber.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/angular.min.js"></script>
+
+    <script type="text/javascript" src="/lib/angular-animate.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-aria.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-messages.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-material.min.js"></script>
+    <script type="text/javascript" src="/lib/md-data-table.min.js"></script>
+    <script type="text/javascript" src="/lib/passive.js"></script>
+
+    <script type="text/javascript" src="/js/history.js"></script>
+
+    <style>
+        .md-table tbody tr:hover{
+            cursor: pointer;
+            background: #b4b4b433;
+        }
+    </style>
+
+</head>
+
+<body layout="column">
+<div ng-controller="Controller" ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 flex md-truncate>ABCC: ANALYTICS</h2>
+        </div>
+    </md-toolbar>
+    <md-progress-linear class="md-warn" ng-disabled="!process" md-mode="indeterminate"></md-progress-linear>
+
+    <md-content layout="column" flex>
+
+        <md-card>
+            <md-card-content layout-align="space-between">
+
+                <md-datepicker ng-model="startDate" md-placeholder="start date"></md-datepicker>
+                <md-datepicker ng-model="endDate" md-placeholder="end date"></md-datepicker>
+
+                <md-button class="md-raised md-primary" ng-disabled="process" ng-click="loadData()" ng-disabled="state">LOAD</md-button>
+            </md-card-content>
+        </md-card>
+
+        <md-card>
+            <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab">
+                <md-tab label="ORDERS">
+                    <md-table-container>
+                        <table md-table>
+                            <thead md-head md-order="query.order" md-on-reorder="Sorting">
+                            <tr md-row>
+                                <th md-column><span>TIME</span></th>
+                                <th md-column><span>SIDE</span></th>
+                                <th md-column><span>MARKET</span></th>
+                                <th md-column md-numeric><span>PRICE</span></th>
+                                <th md-column md-numeric><span>FILLED</span></th>
+                                <th md-column md-numeric><span>TOTAL</span></th>
+                                <th md-column md-numeric><span>FEE</span></th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+
+                            <tr md-row ng-if="orders.length == 0">
+                                <td md-cell colspan="9"><h4 style="text-align: center">EMPTY</h4></td>
+                            </tr>
+
+                            <tr md-row ng-click="GoTo(tick)" ng-repeat="order in orders | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                                <td md-cell><span>{{order.Time}}</span></td>
+                                <td md-cell><span>{{order.Side}}</span></td>
+                                <td md-cell><span>{{order.Market}}</span></td>
+                                <td md-cell><span>{{order.Price | number : 8}}</span></td>
+                                <td md-cell><span>{{order.Volume | number : 8}}</span></td>
+                                <td md-cell><span>{{order.Amount | number : 8}}</span></td>
+                                <td md-cell><span>{{order.Fee | number : 8}}</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+                    <md-table-pagination md-limit="query.limit" md-limit-options="query.options" md-page="query.page" md-total="{{orders.length}}"></md-table-pagination>
+                </md-tab>
+                <md-tab label="UNITS">
+                    <md-content class="md-padding" layout="row" layout-wrap flex-xs flex-gt-xs="100">
+
+                        <div ng-repeat="coin in unitVolume" flex="25">
+                            <md-card>
+                                <md-card-header>
+                                    <md-card-avatar>
+                                        <i style="width:40px; height: 40px;font-size: 40px;" class="cc {{coin.unit.toUpperCase()}}"></i>
+                                    </md-card-avatar>
+                                    <md-card-header-text>
+                                        <span class="md-title">{{coin.unit.toUpperCase()}}</span>
+                                        <span class="md-subhead">amount: {{coin.amount | number : 8}}</span>
+                                    </md-card-header-text>
+                                </md-card-header>
+                                <md-divider></md-divider>
+                                <md-card-title>
+                                    <md-card-title-text>
+                                        <span class="md-headline">volume</span>
+                                    </md-card-title-text>
+                                </md-card-title>
+                                <md-card-content>
+                                    <p>BTC: {{coin.volume["btc"] | number : 8}}</p>
+                                    <p>ETH: {{coin.volume["eth"] | number : 8}}</p>
+                                    <p>USDT: {{coin.volume["usdt"] | number : 8}}</p>
+                                </md-card-content>
+                            </md-card>
+                        </div>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-card>
+    </md-content>
+
+</div>
+
+</body>
+</html>

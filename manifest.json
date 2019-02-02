@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "ABCC Analytics",
+  "version": "0.0.1",
+  "description": "Specialized analytics extension for the ABCC.COM traders",
+  "icons": {
+    "16": "images/16.png",
+    "32": "images/32.png",
+    "48": "images/48.png",
+    "64": "images/64.png",
+    "128": "images/128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "js/content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "cookies",
+    "background",
+    "notifications",
+    "*://*.abcc.com/*"
+  ],
+  "background": {
+    "page": "html/background.html"
+  },
+  "browser_action": {
+    "default_title": "Abcc Analytic",
+    "default_icon": "images/32.png",
+    "default_popup": "html/popup.html"
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

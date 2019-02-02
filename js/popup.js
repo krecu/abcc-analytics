@@ -1,0 +1,1 @@
+window.open("/html/history.html", '_blank');
